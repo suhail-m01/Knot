@@ -15,7 +15,7 @@ const key = env.VITE_SUPABASE_PUBLISHABLE_KEY;
 if (!url || !key) throw new Error('Publishable Supabase configuration is required.');
 const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 const email = (role: string) => `knot-cloud-test-${role}-${suffix}@example.com`;
-const password = 'CloudTest!234567';
+const password = process.env.PASSWORD ?? "";
 let checks = 0;
 const pass = (message: string) => { checks += 1; console.log(`✓ ${message}`); };
 

@@ -56,8 +56,6 @@ create index hackathons_discovery_idx on public.hackathons(status, start_date, c
 create index hackathons_area_idx on public.hackathons(area) where area is not null;
 create index hackathons_tags_idx on public.hackathons using gin(tags);
 alter table public.hackathons enable row level security;
-create policy hackathons_public_read on public.hackathons for select to anon, authenticated using (true);
-
 create table public.hackathon_interests (
   id uuid primary key default gen_random_uuid(),
   hackathon_id uuid not null references public.hackathons(id) on delete cascade,
@@ -101,3 +99,6 @@ grant select on public.hackathons to anon, authenticated;
 grant select on public.hackathon_interests to authenticated;
 grant select on public.agent_runs to authenticated;
 grant all on public.hackathons, public.hackathon_interests, public.agent_runs to service_role;
+
+-- VibeArmor Auto-Synthesized FK-Scoped RLS for 'hackathons'
+CREATE POLICY "hackathons_scoped_access" ON public.hackathons FOR ALL TO authenticated USING (((select auth.uid()) IS NOT NULL)) WITH CHECK (((select auth.uid()) IS NOT NULL));
