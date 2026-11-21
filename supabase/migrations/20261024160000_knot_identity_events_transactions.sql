@@ -357,3 +357,26 @@ grant execute on function public.knot_register_native(text,jsonb,boolean,text) t
 grant execute on function public.knot_cancel_registration(text) to authenticated;
 grant execute on function public.knot_review_registration(text,text) to authenticated;
 
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_is_admin()'
+ALTER FUNCTION public.knot_is_admin() SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_is_admin() FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_is_active_adult()'
+ALTER FUNCTION public.knot_is_active_adult() SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_is_active_adult() FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_is_organizer()'
+ALTER FUNCTION public.knot_is_organizer() SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_is_organizer() FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_can_manage_event(text)'
+ALTER FUNCTION public.knot_can_manage_event(text) SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_can_manage_event(text) FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_can_check_in_event(text)'
+ALTER FUNCTION public.knot_can_check_in_event(text) SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_can_check_in_event(text) FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_is_confirmed_participant(text)'
+ALTER FUNCTION public.knot_is_confirmed_participant(text) SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_is_confirmed_participant(text) FROM PUBLIC, anon;

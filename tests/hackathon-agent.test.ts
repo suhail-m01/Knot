@@ -244,7 +244,7 @@ test('anonymous interest records the click and returns only the server-selected 
 
 test('manual runner requires the configured secret', async () => {
   const previous = process.env.CRON_SECRET;
-  process.env.CRON_SECRET = 'test-secret-with-at-least-16-characters';
+  process.env.CRON_SECRET = process.env.PROCESS_ENV_CRON_SECRET ?? "";
   try {
     const runResult: AgentRunResult = { runId: 'run-1', status: 'completed', itemsFound: 0, itemsSaved: 0, sources: [], errors: [], startedAt: '2026-11-01T00:00:00Z', finishedAt: '2026-11-01T00:00:01Z' };
     const handler = createAgentRunHandler({ run: async () => runResult });

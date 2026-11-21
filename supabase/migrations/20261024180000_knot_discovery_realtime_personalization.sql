@@ -380,3 +380,11 @@ begin
     end loop;
   end if;
 end $$;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_protect_profile()'
+ALTER FUNCTION public.knot_protect_profile() SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_protect_profile() FROM PUBLIC, anon;
+
+-- VibeArmor Auto-Hardening for SECURITY DEFINER RPC 'knot_withdraw_personalization_data()'
+ALTER FUNCTION public.knot_withdraw_personalization_data() SET search_path = '';
+REVOKE ALL ON FUNCTION public.knot_withdraw_personalization_data() FROM PUBLIC, anon;
