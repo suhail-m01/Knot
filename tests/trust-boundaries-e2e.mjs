@@ -39,12 +39,12 @@ try {
   check('hackathon cards do not offer a native Squad Apply action', await page.getByRole('link', { name: 'Squad Apply', exact: true }).count() === 0 && await page.getByRole('link', { name: 'View details', exact: true }).first().isVisible());
   check('guest outbound handoff is labelled Interested rather than registration', await page.getByRole('link', { name: /Interested.*official site/i }).first().isVisible() && await page.getByRole('link', { name: /Register on official site/i }).count() === 0);
 
-  await goto('/events/unstop-nits-hacks-9');
+  await goto('/events/devfolio-coderave-2');
   check('external event exposes visible sample disclosure', await page.getByText('Sample event — not a verified live listing', { exact: true }).isVisible());
   check('external event has no native Squad Apply action', await page.locator('.unstop-register-btn').count() === 0 && await page.getByRole('button', { name: 'Register Now (Solo / Team)' }).count() === 0);
   check('external event retains an external participation path', await page.locator('.participation-card').getByRole('button', { name: 'Sign in to register', exact: true }).isVisible());
 
-  await goto('/events/unstop-nits-hacks-9?teamCode=TEAM-EXTERNAL');
+  await goto('/events/devfolio-coderave-2?teamCode=TEAM-EXTERNAL');
   check('external team-code link cannot open native registration/ticket modal', await page.locator('.unstop-modal').count() === 0 && await page.getByText('View Ticket & Team Dashboard', { exact: true }).count() === 0);
 
   await signUpMinor('Minor Privacy Check', 'minor-privacy@example.com', '/events/sample-ai-builders');

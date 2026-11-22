@@ -13,6 +13,7 @@ import {
 import { useState } from 'react';
 import { localities } from '../domain/localities';
 import { extractPosterText } from '../domain/ocr';
+import { istDayMonthYear } from '../domain/sampleDates';
 import { parseInstantText } from '../domain/parser';
 import { validWebUrl } from '../domain/validation';
 import { useApp } from '../state/AppContext';
@@ -23,32 +24,39 @@ export interface SmartWhatsAppImporterModalProps {
   onClose: () => void;
 }
 
-const SAMPLE_WHATSAPP_AI = `🚨 *BANGALORE AI & DEV MEETUP #4* 🚨
+function sampleWhatsappAi(): string {
+  return `🚨 *BANGALORE AI & DEV MEETUP #4* 🚨
 Hey builders! GDG Bengaluru is hosting a hands-on AI Agents workshop this Saturday.
-📅 Date: 14/11/2026
+📅 Date: ${istDayMonthYear(14)}
 ⏰ Time: 10:00 AM – 2:00 PM IST
 📍 Venue: BHIVE Workspace, HSR Layout, Sector 6, Bengaluru
 🎟️ Price: Free entry (limited to 50 seats)
 🔗 RSVP: https://gdg.community.dev/events/ai-meetup-bangalore
 Topics: LLMs, LangChain, React, Python. Open to all student & professional builders!`;
+}
 
-const SAMPLE_WHATSAPP_HACKATHON = `🔥 *VECNAVERSE NATIONAL LEVEL HACKATHON 2026* 🔥
+function sampleWhatsappHackathon(): string {
+  return `🔥 *VECNAVERSE NATIONAL LEVEL HACKATHON 2026* 🔥
 Theme: Hyperlocal Event Discovery & Community Engagement
-📅 Date: 28/11/2026 to 29/11/2026
+📅 Date: ${istDayMonthYear(28)} to ${istDayMonthYear(29)}
 ⏰ Time: 9:00 AM IST onwards
 📍 Venue: Community Innovation Hub, Koramangala 5th Block, Bengaluru
 👥 Teams: 2 to 4 members
 💰 Prize Pool: ₹1,50,000 + Swags
 🔗 Register: https://unstop.com/
 Free participation! Mentors from top startups will guide teams.`;
+}
 
-const SAMPLE_WHATSAPP_DESIGN = `🎨 *Design Systems for Everyone · In-Person Sprint*
+function sampleWhatsappDesign(): string {
+  return `🎨 *Design Systems for Everyone · In-Person Sprint*
 Hosted by DesignCircle Bangalore
-📅 Date: 21/11/2026
+📅 Date: ${istDayMonthYear(21)}
 ⏰ Time: 3:00 PM IST
 📍 Venue: 100 Feet Rd, Indiranagar, Bengaluru (350m from Indiranagar Metro)
 🔗 Registration: https://meetup.com/design-systems-bangalore
 Free entry. Bring your laptops!`;
+}
+
 
 function localDateTimeValue(iso: string | null): string {
   if (!iso) return '';
@@ -215,9 +223,9 @@ export function SmartWhatsAppImporterModal({ open, onClose }: SmartWhatsAppImpor
             <div className="whatsapp-input-section">
               <div className="sample-chips-row">
                 <span>Labelled sample templates:</span>
-                <button type="button" className="sample-chip" onClick={() => parseRawText(SAMPLE_WHATSAPP_HACKATHON)}>Hackathon sample</button>
-                <button type="button" className="sample-chip" onClick={() => parseRawText(SAMPLE_WHATSAPP_AI)}>HSR meetup sample</button>
-                <button type="button" className="sample-chip" onClick={() => parseRawText(SAMPLE_WHATSAPP_DESIGN)}>Design sprint sample</button>
+                <button type="button" className="sample-chip" onClick={() => parseRawText(sampleWhatsappHackathon())}>Hackathon sample</button>
+                <button type="button" className="sample-chip" onClick={() => parseRawText(sampleWhatsappAi())}>HSR meetup sample</button>
+                <button type="button" className="sample-chip" onClick={() => parseRawText(sampleWhatsappDesign())}>Design sprint sample</button>
               </div>
               <textarea className="whatsapp-textarea" rows={6} value={inputText} onChange={(event) => parseRawText(event.target.value)} placeholder="Paste WhatsApp or forwarded event text here…" />
             </div>

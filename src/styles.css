@@ -880,7 +880,7 @@ input[type="range"] { width: 100%; accent-color: var(--primary); }
   .page-heading h1 { font-size: 2.15rem; }
   .page-heading > .button, .page-heading > .button-row { width: 100%; }
   .page-heading > .button-row .button { flex: 1; }
-  .section-heading { align-items: flex-start; }
+  .section-heading { align-items: flex-start; flex-wrap: wrap; }
   .section-heading h2 { font-size: 1.45rem; }
   .section-heading > a { margin-top: 5px; }
   .hero__content { width: calc(100% - 26px); min-height: 0; padding: 42px 0 55px; }
