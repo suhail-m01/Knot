@@ -6,6 +6,30 @@ present, gaps listed. **Missing** = not present in knot-mern. **Not verified** =
 
 Last updated: 2026-11-22. Re-check this file after each port batch.
 
+## Current serving model (read first)
+
+- The preview on port 5174 runs the **MERN Express server** (`knot-mern/server`), which serves the **original UI build** (`dist/`, built from the repo root) and the `/api` routes.
+- The original UI runs in its default local mode: all app data lives in the browser (`knot.product.data.v1` in localStorage), as in the original repo.
+- Server-side ports are added route by route under `/api`. The original client calls them through its own `fetch` helpers.
+- `knot-mern/client` (the JSX rewrite) is no longer served. It is kept for reference and is not part of the preview.
+- Test-only: `HOST=127.0.0.1` and `CLIENT_DIST` env overrides exist in `server/src/index.js` and `server/src/app.js`.
+
+## Done in this batch
+
+- Original UI served by Express (verified: all 16 original routes render, no page errors).
+- `/api/hackathons` (list with the original filters, paging, and curated fallback), `/api/hackathons/status`, `/api/hackathons/interests` (auth), `/api/hackathons/:id/interest` (saved only when signed in; returns the official link). Data: `server/src/data/curatedHackathons.json`, exported from the original `liveSeed.ts`. Tests: `server/tests/hackathons.test.js` (8/8). Server suite: all passing.
+- Browser: `/hackathons` shows 14 hackathons with no failed API calls.
+
+## Still to port (in priority order)
+
+1. Save local app data to Mongo (the original keeps everything in localStorage; accounts, registrations, and events are not yet on the server).
+2. Hackathon harvester (`agents/hackathon`, 15 sources) and status with real data.
+3. Supabase cloud discovery and repository RPCs (`src/data/supabase/*`) as Express routes.
+4. Edge functions: `knot-approved-feed`, `knot-geocode`, `knot-provider-worker`, `knot-razorpay-webhook`.
+5. Media library, OCR (Tesseract.js on the server), team invitations, Minor Mode.
+
+
+
 ## Routes (original `src/App.tsx`)
 
 | Original route | Original page | knot-mern equivalent | Status |

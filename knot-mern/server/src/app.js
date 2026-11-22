@@ -12,8 +12,12 @@ import { apiRouter } from './routes/index.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-// In production the API also serves the built React app (client/dist) from the same origin.
-export const clientDist = path.resolve(here, '../../client/dist');
+// In production the API also serves the built React app from the same origin. By default this is the
+// original Knot UI: the root project's build (`npm run build` in the repository root, output in dist/).
+// Set CLIENT_DIST to serve a different build.
+export const clientDist = process.env.CLIENT_DIST
+  ? path.resolve(process.env.CLIENT_DIST)
+  : path.resolve(here, '../../../dist');
 
 export function createApp() {
   const app = express();

@@ -7,6 +7,7 @@ import eventsRoutes from './events.routes.js';
 import organizerRoutes from './organizer.routes.js';
 import notificationsRoutes from './notifications.routes.js';
 import adminRoutes from './admin.routes.js';
+import hackathonsRoutes from './hackathons.routes.js';
 
 export const apiRouter = Router();
 
@@ -26,3 +27,4 @@ apiRouter.use('/events', eventsRoutes);
 apiRouter.use('/organizer', organizerRoutes);
 apiRouter.use('/notifications', notificationsRoutes);
 apiRouter.use('/admin', adminRoutes);
+apiRouter.use('/hackathons', hackathonsRoutes);
