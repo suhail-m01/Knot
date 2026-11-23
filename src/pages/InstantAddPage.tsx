@@ -8,8 +8,12 @@ import { readPublicEventPage } from '../domain/inputAdapters';
 import { extractPosterText } from '../domain/ocr';
 import { useApp } from '../state/AppContext';
 import type { Confidence, Submission } from '../domain/types';
+import { istDayMonthYear } from '../domain/sampleDates';
 
-const sampleText = `Bengaluru Product & AI Meetup\nDate: 14/11/2026\nTime: 6 PM onwards\nVenue: Sample Community Hall, Koramangala\nOpen to: 18+\nFree for everyone\nRegister: https://example.com/product-ai-meetup\nMeet product builders for practical demos and a community discussion.`;
+/** Labelled sample, dated two weeks ahead so it stays valid (see domain/sampleDates). */
+function sampleText(now: Date = new Date()): string {
+  return `Bengaluru Product & AI Meetup\nDate: ${istDayMonthYear(14, now)}\nTime: 6 PM onwards\nVenue: Sample Community Hall, Koramangala\nOpen to: 18+\nFree for everyone\nRegister: https://example.com/product-ai-meetup\nMeet product builders for practical demos and a community discussion.`;
+}
 
 function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   return <span className={`confidence confidence--${confidence}`}>{confidence === 'missing' ? 'Needs input' : `${confidence} confidence`}</span>;
@@ -96,7 +100,7 @@ export function InstantAddPage() {
         <section className="paste-panel">
           <div className="paste-panel__heading"><ClipboardPaste /><div><h2>Paste event text</h2><p>WhatsApp forwards, email announcements and plain-text poster content work best.</p></div></div>
           <textarea value={rawText} onChange={(event) => setRawText(event.target.value)} rows={14} placeholder="Paste the event title, date, time, venue, eligibility, registration link and other details here…" />
-          <div className="paste-panel__footer"><button className="text-button" onClick={() => setRawText(sampleText)}>Insert labelled sample text</button><span>{rawText.length} characters</span></div>
+          <div className="paste-panel__footer"><button className="text-button" onClick={() => setRawText(sampleText())}>Insert labelled sample text</button><span>{rawText.length} characters</span></div>
           <div className="input-adapters"><div><label>Public event URL <span>Optional · CORS permitting</span><div className="input-with-action"><input type="url" value={sourceUrl} onChange={(event) => setSourceUrl(event.target.value)} placeholder="https://public-site.example/event" /><LoadingButton loading={urlLoading} className="button button--secondary button--small" onClick={fetchPublicPage}>Fetch text</LoadingButton></div></label><label>Poster or screenshot <span>Local English OCR · up to 8 MB</span><input type="file" accept="image/png,image/jpeg,image/webp,image/bmp" disabled={ocrLoading} onChange={(event) => void readPoster(event.target.files?.[0])} /></label>{ocrLoading && <div className="ocr-progress" role="status">Reading poster locally… {Math.round(ocrProgress * 100)}%</div>}</div><p>Public pages are fetched without account credentials. Private networks are rejected, and Knot does not bypass CORS. Poster images and original evidence stay private to you and reviewers; inspect personal contact details before submitting.</p></div>
           {inputMessage && <div className="action-message" role="status">{inputMessage}</div>}
           {error && <div className="form-error" role="alert">{error}</div>}

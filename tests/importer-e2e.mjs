@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict';
+
+// Dates are relative to today in India time, so this flow never depends on a fixed calendar date.
+const istDay = (days) => new Date(Date.now() + days * 86_400_000).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: 'numeric' });
+const istIso = (days) => { const [d, m, y] = istDay(days).split('/'); return `${y}-${m}-${d}`; };
 import { chromium } from 'playwright';
 
 const base = process.env.E2E_BASE_URL || 'http://127.0.0.1:5174';
@@ -35,16 +39,17 @@ try {
   await modal.waitFor();
   check('importer is explicitly rule-based and review-gated', await modal.getByText('Rule-based draft importer', { exact: true }).isVisible() && await modal.getByRole('button', { name: 'Submit for human review' }).isVisible());
 
-  const onlineText = 'Online AI Workshop\nDate: 14/11/2026\nTime: 10:00 AM\nMode: Online via Zoom';
+  const onlineText = `Online AI Workshop\nDate: ${istDay(14)}\nTime: 10:00 AM\nMode: Online via Zoom`;
   await modal.locator('textarea').fill(onlineText);
   await modal.getByRole('button', { name: 'Submit for human review' }).click();
   check('online draft without registration/joining link is blocked', await modal.getByText('An online event requires a registration or joining link.', { exact: true }).isVisible());
   check('blocked online draft creates no submission', ((await readData())?.submissions ?? []).length === 0);
 
-  const raw = 'Vecnaverse Review Hackathon\nDate: 28/11/2026 to 29/11/2026\nTime: 9:00 AM IST\nVenue: Community Innovation Hub, Koramangala 5th Block, Bengaluru\nPrize Pool: ₹1,50,000 + Swags\nRegister: https://unstop.com/';
+  const expectedStart = `${istIso(28)}T09:00`;
+  const raw = `Vecnaverse Review Hackathon\nDate: ${istDay(28)} to ${istDay(29)}\nTime: 9:00 AM IST\nVenue: Community Innovation Hub, Koramangala 5th Block, Bengaluru\nPrize Pool: ₹1,50,000 + Swags\nRegister: https://unstop.com/`;
   await modal.locator('textarea').fill(raw);
-  await page.waitForFunction(() => document.querySelector('.whatsapp-importer-modal input[type="datetime-local"]')?.value === '2026-11-28T09:00');
-  check('supplied date is extracted instead of retaining a default', await modal.locator('input[type="datetime-local"]').inputValue() === '2026-11-28T09:00');
+  await page.waitForFunction((want) => document.querySelector('.whatsapp-importer-modal input[type="datetime-local"]')?.value === want, expectedStart);
+  check('supplied date is extracted instead of retaining a default', await modal.locator('input[type="datetime-local"]').inputValue() === expectedStart);
   check('full source venue is preserved', (await modal.getByLabel('Venue Name & Landmark').inputValue()).includes('Community Innovation Hub, Koramangala 5th Block'));
   check('prize pool does not become free or paid ticket evidence', await modal.getByLabel('Price Evidence').inputValue() === 'unknown');
   check('locality is inferred from evidence', await modal.getByLabel('Locality / Area').inputValue() === 'koramangala');
@@ -54,7 +59,7 @@ try {
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('knot.product.data.v1'))?.submissions?.[0]?.status === 'pending_review');
   const data = await readData();
   const submission = data.submissions[0];
-  check('submission is pending review with confirmed structured fields', submission.status === 'pending_review' && submission.draft.startDatetime.value.startsWith('2026-11-28') && submission.draft.venueName.value.includes('Community Innovation Hub') && submission.draft.localityId.value === 'koramangala');
+  check('submission is pending review with confirmed structured fields', submission.status === 'pending_review' && submission.draft.startDatetime.value.startsWith(istIso(28)) && submission.draft.venueName.value.includes('Community Innovation Hub') && submission.draft.localityId.value === 'koramangala');
   check('submission preserves unknown price and private raw evidence', submission.draft.price.value.kind === 'unknown' && submission.rawText.includes('Prize Pool'));
   check('no public event or native registration is created', !data.events.some((event) => event.title === 'Vecnaverse Review Hackathon') && !data.registrations.some((registration) => registration.eventId === submission.canonicalEventId));
   check('no uncaught browser exceptions', errors.length === 0);
